@@ -1,20 +1,41 @@
 let taskNumber = 1;
 
 const newTask = () => {
-    const taskDescription = document.createElement("span");
+    const taskList = document.getElementById("toDo");
+    const task = document.createElement("div");
+    task.id = "t" + taskNumber;
+    task.classList.add("toDoTask", "task");
+    taskList.appendChild(task);
     const checkbox = document.createElement("input");
     checkbox.type = "checkbox";
     checkbox.id = "cb" + taskNumber;
-    taskNumber++;
-    const taskList = document.getElementById("toDo");
-    const task = document.createElement("div");
-    taskDescription.innerText = document.getElementById("newTask").value;
-    task.classList.add("toDoTask");
+    checkbox.addEventListener("change", changeTaskList);
     task.appendChild(checkbox);
+    const taskDescription = document.createElement("span");
+    taskDescription.innerText = document.getElementById("newTask").value;
     task.appendChild(taskDescription);
-    taskList.appendChild(task);
 
     clearNewTask();
-}
+    taskNumber++;
+};
 
 const clearNewTask = () => document.getElementById("newTask").value = "";
+
+const changeTaskList = (event) => {
+    const task = document.getElementById("t" + event.target.id.substring(2));
+    event.target.checked ? moveToDone(task) : moveToToDo(task);
+};
+
+const moveToDone = (task) => {
+    document.getElementById("toDo").removeChild(task);
+    document.getElementById("done").appendChild(task);
+    task.classList.remove("toDoTask");
+    task.classList.add("doneTask");
+};
+
+const moveToToDo = (task) => {
+    document.getElementById("done").removeChild(task);
+    document.getElementById("toDo").appendChild(task);
+    task.classList.remove("doneTask");
+    task.classList.add("toDoTask");
+};
