@@ -1,6 +1,7 @@
 .task {
     border: 1px solid;
     margin-bottom: 2px;
+    width: 30%;
 }
 
 .listTitle {
@@ -9,4 +10,11 @@
 
 #newTask {
     margin-top: 20px;
+}
+
+.dltBtn {
+    background-color: white;
+    border: 0px;
+    color: red;
+    font-weight: bolder;
 }

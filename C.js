@@ -9,11 +9,17 @@ const newTask = () => {
     const checkbox = document.createElement("input");
     checkbox.type = "checkbox";
     checkbox.id = "cb" + taskNumber;
-    checkbox.addEventListener("change", changeTaskList);
+    checkbox.addEventListener("click", changeTaskList);
     task.appendChild(checkbox);
     const taskDescription = document.createElement("span");
     taskDescription.innerText = document.getElementById("newTask").value;
     task.appendChild(taskDescription);
+    const deleteTaskBtn = document.createElement("button");
+    deleteTaskBtn.innerText = "X";
+    deleteTaskBtn.classList.add("dltBtn");
+    deleteTaskBtn.id = "dlt" + taskNumber;
+    deleteTaskBtn.addEventListener("click", deleteTask);
+    task.appendChild(deleteTaskBtn);
 
     clearNewTask();
     taskNumber++;
@@ -39,3 +45,7 @@ const moveToToDo = (task) => {
     task.classList.remove("doneTask");
     task.classList.add("toDoTask");
 };
+
+const deleteTask = (event) => {
+    document.getElementById("t" + event.target.id.substring(3)).remove();
+}
