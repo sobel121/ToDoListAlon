@@ -1,16 +1,19 @@
 let taskNumber = 1;
-const toDoList = document.getElementById("toDo");
+const todoList = document.getElementById("toDo");
 const doneList = document.getElementById("done");
 
-const createNewTask = () => {
+const generateTaskId = (taskNumber) => "t" + taskNumber;
+
+const createNewTaskElement = () => {
     const task = document.createElement("div");
-    task.id = "t" + taskNumber;
+    task.id = generateTaskId(taskNumber);
+    taskNumber++;
     task.classList.add("toDoTask", "task");
 
     return task;
 }
 
-const createNewCheckbox = () => {
+const createNewCheckboxElement = () => {
     const checkbox = document.createElement("input");
     checkbox.type = "checkbox";
     checkbox.addEventListener("click", switchTaskList);
@@ -25,7 +28,7 @@ const createTaskDescription = (event) => {
     return taskDescription;
 }
 
-const createDeleteTaskButton = () => {
+const createDeleteTaskButtonElement = () => {
     const deleteTaskButton = document.createElement("button");
     deleteTaskButton.innerText = "X";
     deleteTaskButton.classList.add("deleteButton");
@@ -34,43 +37,41 @@ const createDeleteTaskButton = () => {
     return deleteTaskButton
 }
 
+const clearTaskInput = (event) => event.target.value = "";
+
 const newTask = (event) => {
-    const task = createNewTask();
-    const checkbox = createNewCheckbox();
+    const task = createNewTaskElement();
+    const checkbox = createNewCheckboxElement();
     const taskDescription = createTaskDescription(event);
-    const deleteTaskButton = createDeleteTaskButton();
+    const deleteTaskButton = createDeleteTaskButtonElement();
     
     task.appendChild(checkbox);
     task.appendChild(taskDescription);
     task.appendChild(deleteTaskButton);
     
-    toDoList.appendChild(task);
-
-    event.target.value = "";
-    taskNumber++;
+    todoList.appendChild(task);
+    clearTaskInput(event);
 };
 
 const switchTaskList = (event) => {
     const task = event.target.parentElement;
-    event.target.checked ? moveToDone(task) : moveToToDo(task);
+    event.target.checked ? moveToDone(task) : moveToTodo(task);
 };
 
 const moveToDone = (task) => {
-    toDoList.removeChild(task);
+    todoList.removeChild(task);
     doneList.appendChild(task);
     task.classList.remove("toDoTask");
     task.classList.add("doneTask");
 };
 
-const moveToToDo = (task) => {
+const moveToTodo = (task) => {
     doneList.removeChild(task);
-    toDoList.appendChild(task);
+    todoList.appendChild(task);
     task.classList.remove("doneTask");
     task.classList.add("toDoTask");
 };
 
-const deleteTask = (event) => {
-    event.target.parentElement.remove();
-}
+const deleteTask = (event) => event.target.parentElement.remove();
 
-document.getElementById("newTask").addEventListener("change", newTask);
+document.getElementById("taskDescriptionInput").addEventListener("change", newTask);
