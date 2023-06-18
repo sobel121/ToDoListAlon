@@ -1,11 +1,10 @@
 .task {
     border: 1px solid;
     margin-bottom: 2px;
-    overflow: hidden;
     width: 500px;
-    text-overflow: ellipsis;
     display: flex;
     justify-content: space-between;
+    align-items: center;
 }
 
 .listTitle {
@@ -19,6 +18,9 @@
 .taskDescription {
     border: 0;
     width: 300px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    background-color: white;
 }
 
 .deleteButton {

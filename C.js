@@ -84,6 +84,7 @@ const newTask = (event) => {
     task.appendChild(editAndDeleteButtons);
     
     todoList.appendChild(task);
+    addTaskToLocalStorage(task);
     clearTaskInput(event);
 };
 
@@ -106,7 +107,36 @@ const moveToTodo = (task) => {
     task.classList.add("toDoTask");
 };
 
-const deleteTask = (event) => event.target.parentElement.parentElement.remove();
+const addTaskToLocalStorage = (task) => {
+    if (localStorage.getItem("tasks") === null) {
+        localStorage.setItem("tasks", JSON.stringify([]));
+    }
+
+    const savedTask = {
+        id: task.id,
+        description: task.children[0].children[1].value,
+        list: task.children[0].children[0].checked ? "done" : "todo"
+    }
+
+    const savedTasks = JSON.parse(localStorage.getItem("tasks"));
+    savedTasks.push(savedTask);
+
+    localStorage.setItem("tasks", JSON.stringify(savedTasks));
+}
+
+const removeTaskFromLocalStorage = (event) => {
+    const taskId = event.target.parentElement.parentElement.id;
+
+    let savedTasks = JSON.parse(localStorage.getItem("tasks"));
+    savedTasks = savedTasks.filter(task => task.id !== taskId);
+
+    localStorage.setItem("tasks", JSON.stringify(savedTasks));
+}
+
+const deleteTask = (event) => {
+    removeTaskFromLocalStorage(event);
+    event.target.parentElement.parentElement.remove();
+};
 
 const disableDescriptionEdit = (event) => event.target.disabled = true;
 
