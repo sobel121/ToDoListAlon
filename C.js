@@ -1,51 +1,76 @@
 let taskNumber = 1;
+const toDoList = document.getElementById("toDo");
+const doneList = document.getElementById("done");
 
-const newTask = () => {
-    const taskList = document.getElementById("toDo");
+const createNewTask = () => {
     const task = document.createElement("div");
     task.id = "t" + taskNumber;
     task.classList.add("toDoTask", "task");
-    taskList.appendChild(task);
+
+    return task;
+}
+
+const createNewCheckbox = () => {
     const checkbox = document.createElement("input");
     checkbox.type = "checkbox";
-    checkbox.id = "cb" + taskNumber;
-    checkbox.addEventListener("click", changeTaskList);
-    task.appendChild(checkbox);
-    const taskDescription = document.createElement("span");
-    taskDescription.innerText = document.getElementById("newTask").value;
-    task.appendChild(taskDescription);
-    const deleteTaskBtn = document.createElement("button");
-    deleteTaskBtn.innerText = "X";
-    deleteTaskBtn.classList.add("dltBtn");
-    deleteTaskBtn.id = "dlt" + taskNumber;
-    deleteTaskBtn.addEventListener("click", deleteTask);
-    task.appendChild(deleteTaskBtn);
+    checkbox.addEventListener("click", switchTaskList);
+    
+    return checkbox;
+}
 
-    clearNewTask();
+const createTaskDescription = (event) => {
+    const taskDescription = document.createElement("span");
+    taskDescription.innerText = event.target.value;
+
+    return taskDescription;
+}
+
+const createDeleteTaskButton = () => {
+    const deleteTaskButton = document.createElement("button");
+    deleteTaskButton.innerText = "X";
+    deleteTaskButton.classList.add("deleteButton");
+    deleteTaskButton.addEventListener("click", deleteTask);
+
+    return deleteTaskButton
+}
+
+const newTask = (event) => {
+    const task = createNewTask();
+    const checkbox = createNewCheckbox();
+    const taskDescription = createTaskDescription(event);
+    const deleteTaskButton = createDeleteTaskButton();
+    
+    task.appendChild(checkbox);
+    task.appendChild(taskDescription);
+    task.appendChild(deleteTaskButton);
+    
+    toDoList.appendChild(task);
+
+    event.target.value = "";
     taskNumber++;
 };
 
-const clearNewTask = () => document.getElementById("newTask").value = "";
-
-const changeTaskList = (event) => {
-    const task = document.getElementById("t" + event.target.id.substring(2));
+const switchTaskList = (event) => {
+    const task = event.target.parentElement;
     event.target.checked ? moveToDone(task) : moveToToDo(task);
 };
 
 const moveToDone = (task) => {
-    document.getElementById("toDo").removeChild(task);
-    document.getElementById("done").appendChild(task);
+    toDoList.removeChild(task);
+    doneList.appendChild(task);
     task.classList.remove("toDoTask");
     task.classList.add("doneTask");
 };
 
 const moveToToDo = (task) => {
-    document.getElementById("done").removeChild(task);
-    document.getElementById("toDo").appendChild(task);
+    doneList.removeChild(task);
+    toDoList.appendChild(task);
     task.classList.remove("doneTask");
     task.classList.add("toDoTask");
 };
 
 const deleteTask = (event) => {
-    document.getElementById("t" + event.target.id.substring(3)).remove();
+    event.target.parentElement.remove();
 }
+
+document.getElementById("newTask").addEventListener("change", newTask);

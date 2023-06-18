@@ -2,6 +2,8 @@
     border: 1px solid;
     margin-bottom: 2px;
     width: 30%;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .listTitle {
