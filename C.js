@@ -11,7 +11,7 @@ const createNewTaskElement = () => {
     task.classList.add("toDoTask", "task");
 
     return task;
-}
+};
 
 const createNewCheckboxElement = () => {
     const checkbox = document.createElement("input");
@@ -19,14 +19,18 @@ const createNewCheckboxElement = () => {
     checkbox.addEventListener("click", switchTaskList);
     
     return checkbox;
-}
+};
 
 const createTaskDescription = (event) => {
-    const taskDescription = document.createElement("span");
-    taskDescription.innerText = event.target.value;
+    const taskDescription = document.createElement("input");
+    taskDescription.type = "TextArea";
+    taskDescription.classList.add("taskDescription");
+    taskDescription.addEventListener("change", disableDescriptionEdit)
+    taskDescription.disabled = true;
+    taskDescription.value = event.target.value;
 
     return taskDescription;
-}
+};
 
 const createDeleteTaskButtonElement = () => {
     const deleteTaskButton = document.createElement("button");
@@ -35,16 +39,16 @@ const createDeleteTaskButtonElement = () => {
     deleteTaskButton.addEventListener("click", deleteTask);
 
     return deleteTaskButton
-}
+};
 
 const createEditTaskIconElement = () => {
     const editTaskIcon = document.createElement("img");
     editTaskIcon.src = "./assets/editIcon.png";
     editTaskIcon.classList.add("editIcon");
-    editTaskIcon.addEventListener("click", editDescription());
+    editTaskIcon.addEventListener("click", enableDescriptionToEdit);
 
     return editTaskIcon;
-}
+};
 
 const connectCheckboxAndText = (event) => {
     const connector = document.createElement("div");
@@ -52,7 +56,7 @@ const connectCheckboxAndText = (event) => {
     connector.appendChild(createTaskDescription(event));
 
     return connector;
-}
+};
 
 const connectEditAndDeleteButtons = () => {
     const connector = document.createElement("div");
@@ -60,7 +64,13 @@ const connectEditAndDeleteButtons = () => {
     connector.appendChild(createDeleteTaskButtonElement());
 
     return connector;
-}
+};
+
+enableDescriptionToEdit = (event) => {
+    const wantedDescription = event.target.parentElement.parentElement.children[0].children[1]
+    wantedDescription.disabled = false;
+    wantedDescription.focus();
+};
 
 const clearTaskInput = (event) => event.target.value = "";
 
@@ -98,8 +108,6 @@ const moveToTodo = (task) => {
 
 const deleteTask = (event) => event.target.parentElement.parentElement.remove();
 
-const editDescription = () => {
-    
-}
+const disableDescriptionEdit = (event) => event.target.disabled = true;
 
 document.getElementById("taskDescriptionInput").addEventListener("change", newTask);
