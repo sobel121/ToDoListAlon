@@ -1,9 +1,11 @@
 .task {
     border: 1px solid;
     margin-bottom: 2px;
-    width: 30%;
     overflow: hidden;
+    width: 500px;
     text-overflow: ellipsis;
+    display: flex;
+    justify-content: space-between;
 }
 
 .listTitle {
@@ -19,4 +21,9 @@
     border: 0px;
     color: red;
     font-weight: bolder;
+}
+
+.editIcon {
+    width: 15px;
+    height: 15px;
 }
