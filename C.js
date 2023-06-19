@@ -1,14 +1,4 @@
-const getTaskNumberFromLocalStorage = () => {
-    let taskNumber = JSON.parse(localStorage.getItem("taskNumber"));
-    
-    if (taskNumber === null) {
-        taskNumber = 1;
-    }
-    
-    return taskNumber;
-};
-
-let taskNumber = getTaskNumberFromLocalStorage();
+let taskNumber = 1;
 const todoList = document.getElementById("toDo");
 const doneList = document.getElementById("done");
 
@@ -32,7 +22,6 @@ const updateTaskNumber = () => {
 const createNewTaskElement = () => {
     const task = document.createElement("div");
     task.id = generateTaskId(taskNumber);
-    updateTaskNumber();
     task.classList.add("task");
 
     return task;
@@ -82,7 +71,7 @@ const createDeleteTaskButtonElement = () => {
     return deleteTaskButton
 };
 
-enableEditDescription = (event) => {
+const enableEditDescription = (event) => {
     const wantedDescription = event.target.parentElement.parentElement.children[0].children[1]
     wantedDescription.disabled = false;
     wantedDescription.focus();
@@ -123,7 +112,7 @@ const connectTaskContent = (description) => {
     task.appendChild(editAndDeleteButtons);
 
     return task;
-}
+};
 
 const specifyTaskList = (task, taskElement) => {
     const checkboxElement = taskElement.children[0].children[0];
@@ -158,6 +147,7 @@ const newTask = (event) => {
     
     todoList.appendChild(task);
     addTaskToLocalStorage(task);
+    updateTaskNumber();
     clearTaskInput(event);
 };
 
@@ -211,15 +201,13 @@ const updateTaskDescriptionInLocalStorage = (event) => {
 
 const updateTaskListInLocalStorage = (event) => {
     const taskId = event.target.parentElement.parentElement.id;
-
-    let savedTasks = getTasksFromLocalStorage();
+    console.log(taskId);
+    const savedTasks = getTasksFromLocalStorage();
     
-    savedTasks.map(task => {
+    savedTasks.forEach(task => {
         if (task.id === taskId) {
-            return task.list = event.target.checked ? "done" : "todo";
+            task.list = event.target.checked ? "done" : "todo";
         }
-
-        return task;
     });
 
     updateTasksInLocalStorage(savedTasks);
