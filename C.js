@@ -6,7 +6,7 @@ const getTaskNumberFromLocalStorage = () => {
     }
 
     return taskNumber;
-}
+};
 
 let taskNumber = getTaskNumberFromLocalStorage();
 const todoList = document.getElementById("toDo");
@@ -101,6 +101,7 @@ const newTask = (event) => {
 const switchTaskList = (event) => {
     const task = event.target.parentElement.parentElement;
     event.target.checked ? moveToDone(task) : moveToTodo(task);
+    updateTaskListInLocalStorage(event);
 };
 
 const moveToDone = (task) => {
@@ -129,7 +130,7 @@ const addTaskToLocalStorage = (task) => {
     savedTasks.push(savedTask);
 
     updateTasksInLocalStorage(savedTasks);
-}
+};
 
 const removeTaskFromLocalStorage = (event) => {
     const taskId = event.target.parentElement.parentElement.id;
@@ -138,7 +139,7 @@ const removeTaskFromLocalStorage = (event) => {
     savedTasks = savedTasks.filter(task => task.id !== taskId);
 
     updateTasksInLocalStorage(savedTasks);
-}
+};
 
 const deleteTask = (event) => {
     removeTaskFromLocalStorage(event);
@@ -162,8 +163,24 @@ const updateTaskDescriptionInLocalStorage = (event) => {
         return task;
     });
 
-    updateTasksInLocalStorage(savedTasks)
-}
+    updateTasksInLocalStorage(savedTasks);
+};
+
+const updateTaskListInLocalStorage = (event) => {
+    const taskId = event.target.parentElement.parentElement.id;
+
+    let savedTasks = getTasksFromLocalStorage();
+    
+    savedTasks.map(task => {
+        if (task.id === taskId) {
+            return task.list = event.target.checked ? "done" : "todo";
+        }
+
+        return task;
+    });
+
+    updateTasksInLocalStorage(savedTasks);
+};
 
 const getTasksFromLocalStorage = () => {
     let savedTasks = JSON.parse(localStorage.getItem("tasks"));
@@ -173,12 +190,12 @@ const getTasksFromLocalStorage = () => {
     }
 
     return savedTasks;
-}
+};
 
 const updateTaskNumber = () => {
     taskNumber++;
     localStorage.setItem("taskNumber", JSON.stringify(taskNumber));
-}
+};
 
 const updateTasksInLocalStorage = (savedTasks) => localStorage.setItem("tasks", JSON.stringify(savedTasks));
 
