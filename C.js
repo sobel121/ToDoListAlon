@@ -65,7 +65,7 @@ const deleteTask = (event) => {
 const createDeleteTaskButtonElement = () => {
     const deleteTaskButton = document.createElement("button");
     deleteTaskButton.innerText = "X";
-    deleteTaskButton.classList.add("deleteButton");
+    deleteTaskButton.classList.add("deleteTaskButton");
     deleteTaskButton.addEventListener("click", deleteTask);
 
     return deleteTaskButton
@@ -201,7 +201,6 @@ const updateTaskDescriptionInLocalStorage = (event) => {
 
 const updateTaskListInLocalStorage = (event) => {
     const taskId = event.target.parentElement.parentElement.id;
-    console.log(taskId);
     const savedTasks = getTasksFromLocalStorage();
     
     savedTasks.forEach(task => {
@@ -215,4 +214,34 @@ const updateTaskListInLocalStorage = (event) => {
 
 const updateTasksInLocalStorage = (savedTasks) => localStorage.setItem("tasks", JSON.stringify(savedTasks));
 
+const RemoveAllListTasksFromLocalStorage = (listName) => {
+    let savedTasks = getTasksFromLocalStorage();
+
+    savedTasks = savedTasks.filter(task => task.list !== listName);
+    updateTasksInLocalStorage(savedTasks);
+};
+
+const deleteListTasks = (list) => {
+    while (list.firstChild) {
+        list.removeChild(list.firstChild);
+    }
+};
+
+const deleteDoneTasks = () => {
+    deleteListTasks(doneList);
+    RemoveAllListTasksFromLocalStorage("done");
+};
+
+const deleteTodoTasks = () => {
+    deleteListTasks(todoList);
+    RemoveAllListTasksFromLocalStorage("todo");
+};
+
+const deleteAllTasks = () => {
+    deleteTodoTasks();
+    deleteDoneTasks();
+};
+
 document.getElementById("taskDescriptionInput").addEventListener("change", newTask);
+document.getElementById("deleteDoneTasksButton").addEventListener("click", deleteDoneTasks);
+document.getElementById("deleteTasksButton").addEventListener("click", deleteAllTasks);

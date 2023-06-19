@@ -23,7 +23,7 @@
     background-color: white;
 }
 
-.deleteButton {
+.deleteTaskButton {
     background-color: white;
     border: 0px;
     color: red;
@@ -33,4 +33,13 @@
 .editIcon {
     width: 15px;
     height: 15px;
+}
+
+#deleteButtonsArea {
+    margin-top: 10px;
+}
+
+.deleteButton {
+    background-color: red;
+    color: white;
 }
