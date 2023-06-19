@@ -128,16 +128,16 @@ const addTaskToLocalStorage = (task) => {
 
     savedTasks.push(savedTask);
 
-    localStorage.setItem("tasks", JSON.stringify(savedTasks));
+    updateTasksInLocalStorage(savedTasks);
 }
 
 const removeTaskFromLocalStorage = (event) => {
     const taskId = event.target.parentElement.parentElement.id;
 
-    let savedTasks = JSON.parse(localStorage.getItem("tasks"));
+    let savedTasks = getTasksFromLocalStorage();
     savedTasks = savedTasks.filter(task => task.id !== taskId);
 
-    localStorage.setItem("tasks", JSON.stringify(savedTasks));
+    updateTasksInLocalStorage(savedTasks);
 }
 
 const deleteTask = (event) => {
@@ -147,8 +147,23 @@ const deleteTask = (event) => {
 
 const disableDescriptionEdit = (event) => {
     event.target.disabled = true;
-    localStorage.getItem("tasks")
+    updateTaskDescriptionInLocalStorage(event);
 };
+
+const updateTaskDescriptionInLocalStorage = (event) => {
+    const taskId = event.target.parentElement.parentElement.id;
+    let savedTasks = getTasksFromLocalStorage();
+    
+    savedTasks.map(task => {
+        if (task.id === taskId) {
+            return task.description = event.target.value;
+        }
+
+        return task;
+    });
+
+    updateTasksInLocalStorage(savedTasks)
+}
 
 const getTasksFromLocalStorage = () => {
     let savedTasks = JSON.parse(localStorage.getItem("tasks"));
@@ -164,5 +179,7 @@ const updateTaskNumber = () => {
     taskNumber++;
     localStorage.setItem("taskNumber", JSON.stringify(taskNumber));
 }
+
+const updateTasksInLocalStorage = (savedTasks) => localStorage.setItem("tasks", JSON.stringify(savedTasks));
 
 document.getElementById("taskDescriptionInput").addEventListener("change", newTask);
