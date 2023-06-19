@@ -1,4 +1,14 @@
-let taskNumber = 1;
+const getTaskNumberFromLocalStorage = () => {
+    let taskNumber = JSON.parse(localStorage.getItem("taskNumber"));
+
+    if (taskNumber === null) {
+        taskNumber = 1;
+    }
+
+    return taskNumber;
+}
+
+let taskNumber = getTaskNumberFromLocalStorage();
 const todoList = document.getElementById("toDo");
 const doneList = document.getElementById("done");
 
@@ -7,7 +17,7 @@ const generateTaskId = (taskNumber) => "t" + taskNumber;
 const createNewTaskElement = () => {
     const task = document.createElement("div");
     task.id = generateTaskId(taskNumber);
-    taskNumber++;
+    updateTaskNumber();
     task.classList.add("toDoTask", "task");
 
     return task;
@@ -45,7 +55,7 @@ const createEditTaskIconElement = () => {
     const editTaskIcon = document.createElement("img");
     editTaskIcon.src = "./assets/editIcon.png";
     editTaskIcon.classList.add("editIcon");
-    editTaskIcon.addEventListener("click", enableDescriptionToEdit);
+    editTaskIcon.addEventListener("click", enableEditDescription);
 
     return editTaskIcon;
 };
@@ -66,7 +76,7 @@ const connectEditAndDeleteButtons = () => {
     return connector;
 };
 
-enableDescriptionToEdit = (event) => {
+enableEditDescription = (event) => {
     const wantedDescription = event.target.parentElement.parentElement.children[0].children[1]
     wantedDescription.disabled = false;
     wantedDescription.focus();
@@ -108,9 +118,7 @@ const moveToTodo = (task) => {
 };
 
 const addTaskToLocalStorage = (task) => {
-    if (localStorage.getItem("tasks") === null) {
-        localStorage.setItem("tasks", JSON.stringify([]));
-    }
+    let savedTasks = getTasksFromLocalStorage();
 
     const savedTask = {
         id: task.id,
@@ -118,7 +126,6 @@ const addTaskToLocalStorage = (task) => {
         list: task.children[0].children[0].checked ? "done" : "todo"
     }
 
-    const savedTasks = JSON.parse(localStorage.getItem("tasks"));
     savedTasks.push(savedTask);
 
     localStorage.setItem("tasks", JSON.stringify(savedTasks));
@@ -138,6 +145,24 @@ const deleteTask = (event) => {
     event.target.parentElement.parentElement.remove();
 };
 
-const disableDescriptionEdit = (event) => event.target.disabled = true;
+const disableDescriptionEdit = (event) => {
+    event.target.disabled = true;
+    localStorage.getItem("tasks")
+};
+
+const getTasksFromLocalStorage = () => {
+    let savedTasks = JSON.parse(localStorage.getItem("tasks"));
+   
+    if (savedTasks === null) {
+        savedTasks = [];
+    }
+
+    return savedTasks;
+}
+
+const updateTaskNumber = () => {
+    taskNumber++;
+    localStorage.setItem("taskNumber", JSON.stringify(taskNumber));
+}
 
 document.getElementById("taskDescriptionInput").addEventListener("change", newTask);
