@@ -31,10 +31,37 @@ const updateTaskNumber = () => {
     localStorage.setItem("taskNumber", JSON.stringify(taskNumber));
 };
 
+const getTaskElementFromAnyOfHisChildren = (event) => {
+    let fatherElement = event.target;
+
+    while (fatherElement.id[0] !== 't') {
+        fatherElement = fatherElement.parentElement;
+    }
+
+    return fatherElement;
+};
+
+const displayEditButton = (event, flag) => {
+    const taskElement = getTaskElementFromAnyOfHisChildren(event);
+    const editButton = taskElement.children[1].children[0];
+
+    editButton.hidden = flag;
+};
+
+const hideEditButton = (event) => {
+    displayEditButton(event, true);
+};
+
+const showEditButton = (event) => {
+    displayEditButton(event, false);
+};
+
 const createNewTaskElement = (id) => {
     const task = document.createElement("div");
     task.classList.add("task");
     task.id = id;
+    task.addEventListener("mouseover", showEditButton);
+    task.addEventListener("mouseout", hideEditButton);
 
     return task;
 };
@@ -108,6 +135,7 @@ const createEditTaskIconElement = () => {
     editTaskIcon.src = "./assets/editIcon.png";
     editTaskIcon.classList.add("editIcon");
     editTaskIcon.addEventListener("click", enableEditDescription);
+    editTaskIcon.hidden = true;
 
     return editTaskIcon;
 };
