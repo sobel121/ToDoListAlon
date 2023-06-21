@@ -7,14 +7,16 @@
 
 <body>
     <h1>Tasks</h1>
-    <h3 class="listTitle">Tasks To Do</h3>
-    <div id="toDo"></div>
-    <h3 class="listTitle">Tasks Done</h3>
-    <div id="done"></div>
-
-    <input type="text" id="taskDescriptionInput">
-    <div id="deleteButtonsArea">
-        <button id="deleteTasksButton" class="deleteButton">delete all tasks</button>
-        <button id="deleteDoneTasksButton" class="deleteButton">delete all done tasks</button>
+    <div id="tasksContainer">
+        <h3 class="listTitle">Tasks To Do</h3>
+        <div id="todo" class="list"></div>
+        <h3 class="listTitle">Tasks Done</h3>
+        <div id="done" class="list"></div>
+    
+        <input type="text" id="taskDescriptionInput">
+        <div id="deleteButtonsArea">
+            <button id="deleteTasksButton" class="deleteButton">delete all tasks</button>
+            <button id="deleteDoneTasksButton" class="deleteButton">delete all done tasks</button>
+        </div>
     </div>
 </body>

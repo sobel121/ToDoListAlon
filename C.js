@@ -1,5 +1,37 @@
-const todoList = document.getElementById("toDo");
+const todoList = document.getElementById("todo");
 const doneList = document.getElementById("done");
+const lists = [todoList, doneList];
+
+const setListsEventListeners = () => {
+    lists.forEach(list => {
+        list.addEventListener("dragover", (event) => {
+            event.preventDefault();
+            const dragged = document.getElementsByClassName("dragging")[0];
+            const afterTask = getDragAfterElement(list, dragged, event.clientY);
+            if (afterTask === undefined) {
+                list.appendChild(dragged);
+            } else {
+                list.insertBefore(dragged, afterTask);
+            }
+        })
+    });
+};
+    
+setListsEventListeners();
+
+const getDragAfterElement = (list, dragged, elementHeight) => {
+    const draggableElements = Object.values(list.children).filter(task => task.id !== dragged.id);
+
+    return draggableElements.reduce((closest, currentTask) => {
+        const ElementBox = currentTask.getBoundingClientRect();
+        const offset = elementHeight - ElementBox.top - ElementBox.height / 2;
+        if (offset < 0 && offset > closest.offset) {
+            return { offset: offset, element: currentTask };
+        } else {
+            return closest;
+        }
+    }, { offset: Number.NEGATIVE_INFINITY }).element;
+};
 
 const getTaskNumberFromLocalStorage = () => {
     let taskNumber = JSON.parse(localStorage.getItem("taskNumber"));
@@ -22,7 +54,19 @@ const getTasksFromLocalStorage = () => {
     return savedTasks;
 };
 
+const getCertainListTasksFromLocalStorage = (localStorageId) => {
+    let savedTasks = JSON.parse(localStorage.getItem(localStorageId));
+
+    if (savedTasks === null) {
+        savedTasks = [];
+    }
+
+    return savedTasks;
+};
+
 let tasks = getTasksFromLocalStorage();
+let todoTasks = getCertainListTasksFromLocalStorage("todoTasks");
+let doneTasks = getCertainListTasksFromLocalStorage("doneTasks");
 
 const generateTaskId = (taskNumber) => "t" + taskNumber;
 
@@ -48,13 +92,10 @@ const displayEditButton = (event, flag) => {
     editButton.hidden = flag;
 };
 
-const hideEditButton = (event) => {
-    displayEditButton(event, true);
-};
+const hideEditButton = (event) => displayEditButton(event, true);
 
-const showEditButton = (event) => {
-    displayEditButton(event, false);
-};
+const showEditButton = (event) => displayEditButton(event, false);
+
 
 const createNewTaskElement = (id) => {
     const task = document.createElement("div");
@@ -62,13 +103,20 @@ const createNewTaskElement = (id) => {
     task.id = id;
     task.addEventListener("mouseover", showEditButton);
     task.addEventListener("mouseout", hideEditButton);
+    task.addEventListener("dragstart", () => {
+        task.classList.add("dragging");
+    });
+    task.addEventListener("dragend", () => {
+        task.classList.remove("dragging");
+    });
+    task.draggable = true;
 
     return task;
 };
 
 const switchTaskList = (event) => {
     const task = event.target.parentElement.parentElement;
-    event.target.checked ? moveToDone(task) : moveToTodo(task);
+    task.parentElement.id === "todo" ? moveToDone(task) : moveToTodo(task);
     updateTaskListInLocalStorage(event);
 };
 
@@ -88,7 +136,7 @@ const disableDescriptionEdit = (event) => {
 const getTaskDescriptionBeforeEdit = (event) => {
     const taskId = event.target.parentElement.parentElement.id;
 
-    return tasks.find(task => task.id = taskId).description;
+    return tasks.find(task => task.id === taskId).description;
 };
 
 const cancelTaskEdit = (event) => {
@@ -113,6 +161,7 @@ const createTaskDescription = (description) => {
 const deleteTask = (event) => {
     removeTaskFromLocalStorage(event);
     event.target.parentElement.parentElement.remove();
+    console.log(tasks);
 };
 
 const createDeleteTaskButtonElement = () => {
@@ -132,7 +181,7 @@ const enableEditDescription = (event) => {
 
 const createEditTaskIconElement = () => {
     const editTaskIcon = document.createElement("img");
-    editTaskIcon.src = "./assets/editIcon.png";
+    editTaskIcon.src = "./assets/editTextIcon.png";
     editTaskIcon.classList.add("editIcon");
     editTaskIcon.addEventListener("click", enableEditDescription);
     editTaskIcon.hidden = true;
