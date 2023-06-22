@@ -42,15 +42,9 @@ const disableDescriptionEdit = (event) => {
     updateTaskDescriptionInLocalStorage(event);
 };
 
-const getTaskDescriptionBeforeEdit = (event) => {
-    const taskId = getTaskElementFromHisChildren(event.target).id;
-
-    return tasks.find(task => task.id = taskId).description;
-};
-
 const cancelTaskEdit = (event) => {
     if (event.key === "Escape") {
-        event.target.value = getTaskDescriptionBeforeEdit(event);
+        event.target.value = event.target.dataset.recentTaskDescription;
         disableDescriptionEdit(event);
     }
 };
@@ -63,6 +57,7 @@ const createTaskDescription = (description) => {
     taskDescription.addEventListener("keydown", cancelTaskEdit);
     taskDescription.disabled = true;
     taskDescription.value = description;
+    taskDescription.dataset.recentTaskDescription = description;
 
     return taskDescription;
 };
@@ -209,6 +204,7 @@ const updateTaskDescriptionInLocalStorage = (event) => {
     const taskIndex = tasks.findIndex(task => task.id === taskId);
     
     tasks[taskIndex].description = event.target.value;
+    event.target.dataset.recentTaskDescription = event.target.value;
 
     setTasksInLocalStorage();
 };
