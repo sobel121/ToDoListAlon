@@ -246,19 +246,19 @@ const RemoveAllListTasksFromLocalStorage = (listName) => {
     setTasksInLocalStorage();
 };
 
-const deleteListTasks = (list) => {
+const clearListTasksDisplay  = (list) => {
     while (list.firstChild) {
         list.removeChild(list.firstChild);
     }
 };
 
 const deleteDoneTasks = () => {
-    deleteListTasks(doneList);
+    clearListTasksDisplay (doneList);
     RemoveAllListTasksFromLocalStorage("done");
 };
 
 const deleteTodoTasks = () => {
-    deleteListTasks(todoList);
+    clearListTasksDisplay (todoList);
     RemoveAllListTasksFromLocalStorage("todo");
 };
 
