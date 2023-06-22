@@ -2,19 +2,58 @@ const todoList = document.getElementById("todo");
 const doneList = document.getElementById("done");
 const lists = [todoList, doneList];
 
+const getTasksFromLocalStorage = () => {
+    let savedTasks = JSON.parse(localStorage.getItem("tasks"));
+    
+    if (savedTasks === null) {
+        savedTasks = [];
+    }
+    
+    return savedTasks;
+};
+
+let tasks = getTasksFromLocalStorage();
+
 const setListsEventListeners = () => {
     lists.forEach(list => {
         list.addEventListener("dragover", (event) => {
             event.preventDefault();
             const dragged = document.getElementsByClassName("dragging")[0];
             const afterTask = getDragAfterElement(list, dragged, event.clientY);
-            if (afterTask === undefined) {
-                list.appendChild(dragged);
-            } else {
-                list.insertBefore(dragged, afterTask);
+            if (list === dragged.parentElement) {
+                if (afterTask === undefined) {
+                    list.appendChild(dragged);
+                } else {
+                    list.insertBefore(dragged, afterTask);
+                }
+
+                list.dragged = createTaskObjectFromElement(dragged);
+                list.afterTask = createTaskObjectFromElement(afterTask);
             }
-        })
+        });
+
+        list.addEventListener("dragend", () => {
+            updateLocalStorageAfterPositionSwap(list.dragged, list.afterTask)
+        });
     });
+};
+
+const createTaskObjectFromElement = (task) => {
+    return task === undefined ? task : {id: task.id, 
+        description: task.children[0].children[1].value,
+        list: task.children[0].children[0].checked ? "done" : "todo"};
+}
+
+const updateLocalStorageAfterPositionSwap = (dragged, afterTask) => {
+    tasks = tasks.filter(task => task.id !== dragged.id);
+
+    if (afterTask === undefined) {
+        tasks.push(dragged);
+    } else {
+        tasks.splice(tasks.findIndex(task => task.id === afterTask.id), 0, dragged);
+    }
+
+    updateTasksInLocalStorage();
 };
     
 setListsEventListeners();
@@ -44,15 +83,6 @@ const getTaskNumberFromLocalStorage = () => {
 }
 
 let taskNumber = getTaskNumberFromLocalStorage();
-const getTasksFromLocalStorage = () => {
-    let savedTasks = JSON.parse(localStorage.getItem("tasks"));
-    
-    if (savedTasks === null) {
-        savedTasks = [];
-    }
-    
-    return savedTasks;
-};
 
 const getCertainListTasksFromLocalStorage = (localStorageId) => {
     let savedTasks = JSON.parse(localStorage.getItem(localStorageId));
@@ -63,10 +93,6 @@ const getCertainListTasksFromLocalStorage = (localStorageId) => {
 
     return savedTasks;
 };
-
-let tasks = getTasksFromLocalStorage();
-let todoTasks = getCertainListTasksFromLocalStorage("todoTasks");
-let doneTasks = getCertainListTasksFromLocalStorage("doneTasks");
 
 const generateTaskId = (taskNumber) => "t" + taskNumber;
 
@@ -95,7 +121,6 @@ const displayEditButton = (event, flag) => {
 const hideEditButton = (event) => displayEditButton(event, true);
 
 const showEditButton = (event) => displayEditButton(event, false);
-
 
 const createNewTaskElement = (id) => {
     const task = document.createElement("div");
@@ -161,7 +186,6 @@ const createTaskDescription = (description) => {
 const deleteTask = (event) => {
     removeTaskFromLocalStorage(event);
     event.target.parentElement.parentElement.remove();
-    console.log(tasks);
 };
 
 const createDeleteTaskButtonElement = () => {
@@ -264,15 +288,11 @@ const moveToTodo = (task) => {
 };
 
 const addTaskToLocalStorage = (task) => {
-    const savedTask = {
-        id: task.id,
-        description: task.children[0].children[1].value,
-        list: task.children[0].children[0].checked ? "done" : "todo"
-    }
+    const savedTask = createTaskObjectFromElement(task);
 
     tasks.push(savedTask);
 
-    updateTasksInLocalStorage(tasks);
+    updateTasksInLocalStorage();
 };
 
 const removeTaskFromLocalStorage = (event) => {
@@ -280,7 +300,7 @@ const removeTaskFromLocalStorage = (event) => {
 
     tasks = tasks.filter(task => task.id !== taskId);
 
-    updateTasksInLocalStorage(tasks);
+    updateTasksInLocalStorage();
 };
 
 const updateTaskDescriptionInLocalStorage = (event) => {
@@ -294,27 +314,25 @@ const updateTaskDescriptionInLocalStorage = (event) => {
         return task;
     });
 
-    updateTasksInLocalStorage(tasks);
+    updateTasksInLocalStorage();
 };
 
 const updateTaskListInLocalStorage = (event) => {
     const taskId = event.target.parentElement.parentElement.id;
-    
     tasks.map(task => {
         if (task.id === taskId) {
             task.list = event.target.checked ? "done" : "todo";
         }
     });
 
-    updateTasksInLocalStorage(tasks);
+    updateTasksInLocalStorage();
 };
 
-const updateTasksInLocalStorage = (savedTasks) => localStorage.setItem("tasks", JSON.stringify(savedTasks));
+const updateTasksInLocalStorage = () => localStorage.setItem("tasks", JSON.stringify(tasks));
 
 const RemoveAllListTasksFromLocalStorage = (listName) => {
-
     tasks = tasks.filter(task => task.list !== listName);
-    updateTasksInLocalStorage(tasks);
+    updateTasksInLocalStorage();
 };
 
 const deleteListTasks = (list) => {

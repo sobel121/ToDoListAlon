@@ -6,17 +6,19 @@
 </head>
 
 <body>
-    <h1>Tasks</h1>
+    <!-- <h1>Tasks</h1> -->
+    <span>
+        new task:
+        <input type="text" id="taskDescriptionInput">
+    </span>
+    <div id="deleteButtonsArea">
+        <button id="deleteTasksButton" class="deleteButton">delete all tasks</button>
+        <button id="deleteDoneTasksButton" class="deleteButton">delete all done tasks</button>
+    </div>
     <div id="tasksContainer">
         <h3 class="listTitle">Tasks To Do</h3>
         <div id="todo" class="list"></div>
         <h3 class="listTitle">Tasks Done</h3>
         <div id="done" class="list"></div>
-    
-        <input type="text" id="taskDescriptionInput">
-        <div id="deleteButtonsArea">
-            <button id="deleteTasksButton" class="deleteButton">delete all tasks</button>
-            <button id="deleteDoneTasksButton" class="deleteButton">delete all done tasks</button>
-        </div>
     </div>
 </body>
