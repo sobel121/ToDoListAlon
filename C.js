@@ -40,7 +40,7 @@ const createNewTaskElement = (id) => {
 };
 
 const switchTaskList = (event) => {
-    const task = event.target.parentElement.parentElement;
+    const task = getTaskElementFromHisChildren(event.target);
     event.target.checked ? moveToDone(task) : moveToTodo(task);
     updateTaskStatusInLocalStorage(event);
 };
@@ -59,7 +59,7 @@ const disableDescriptionEdit = (event) => {
 };
 
 const getTaskDescriptionBeforeEdit = (event) => {
-    const taskId = event.target.parentElement.parentElement.id;
+    const taskId = getTaskElementFromHisChildren(event.target).id;
 
     return tasks.find(task => task.id = taskId).description;
 };
@@ -85,7 +85,7 @@ const createTaskDescription = (description) => {
 
 const deleteTask = (event) => {
     removeTaskFromLocalStorage(event);
-    event.target.parentElement.parentElement.remove();
+    getTaskElementFromHisChildren(event.target).remove();
 };
 
 const createDeleteTaskButtonElement = () => {
@@ -98,7 +98,7 @@ const createDeleteTaskButtonElement = () => {
 };
 
 const enableEditDescription = (event) => {
-    const wantedDescription = event.target.parentElement.parentElement.children[0].children[1]
+    const wantedDescription = getTaskDescriptionFromTask(getTaskElementFromHisChildren(event.target));
     wantedDescription.disabled = false;
     wantedDescription.focus();
 };
@@ -141,7 +141,7 @@ const connectTaskContent = (id, description) => {
 };
 
 const specifyTaskList = (task, taskElement) => {
-    const checkboxElement = taskElement.children[0].children[0];
+    const checkboxElement = getTaskCheckboxFromTask(task);
     if (task.list === "todo") {
         checkboxElement.checked = false;
         todoList.appendChild(taskElement);
@@ -186,12 +186,26 @@ const moveToTodo = (task) => {
     todoList.appendChild(task);
 };
 
+const getTaskCheckboxFromTask = (task) => task.children[0].children[0];
+
+const getTaskDescriptionFromTask = (task) => task.children[0].children[1];
+
+const getTaskElementFromHisChildren = (element) => {
+    let fatherElement = element;
+
+    while (!fatherElement.id.includes('t')) {
+        fatherElement = fatherElement.parentElement;
+    }
+
+    return fatherElement;
+}
+
 const addTaskToLocalStorage = (task) => {
     const savedTask = {
         id: task.id,
-        description: task.children[0].children[1].value,
-        list: task.children[0].children[0].checked ? "done" : "todo"
-    }
+        description: getTaskDescriptionFromTask(task).value,
+        list: getTaskCheckboxFromTask(task).checked ? "done" : "todo"
+    };
 
     tasks.push(savedTask);
 
@@ -199,7 +213,7 @@ const addTaskToLocalStorage = (task) => {
 };
 
 const removeTaskFromLocalStorage = (event) => {
-    const taskId = event.target.parentElement.parentElement.id;
+    const taskId = getTaskElementFromHisChildren(event.target).id;
 
     tasks = tasks.filter(task => task.id !== taskId);
 
@@ -207,7 +221,7 @@ const removeTaskFromLocalStorage = (event) => {
 };
 
 const updateTaskDescriptionInLocalStorage = (event) => {
-    const taskId = event.target.parentElement.parentElement.id;
+    const taskId = getTaskElementFromHisChildren(event.target).id;
     const taskIndex = tasks.findIndex(task => task.id === taskId);
     
     tasks[taskIndex].description = event.target.value;
@@ -216,7 +230,7 @@ const updateTaskDescriptionInLocalStorage = (event) => {
 };
 
 const updateTaskStatusInLocalStorage = (event) => {
-    const taskId = event.target.parentElement.parentElement.id;
+    const taskId = getTaskElementFromHisChildren(event.target).id;
     const taskIndex = tasks.findIndex(task => task.id === taskId);
     
     tasks[taskIndex].list = event.target.checked ? "done" : "todo";
