@@ -1,26 +1,10 @@
 const todoList = document.getElementById("toDo");
 const doneList = document.getElementById("done");
 
-const getTaskNumberFromLocalStorage = () => {
-    let taskNumber = JSON.parse(localStorage.getItem("taskNumber"));
-    
-    if (taskNumber === null) {
-        taskNumber = 1;
-    }
-    
-    return taskNumber;
-}
+const getTaskNumberFromLocalStorage = () => JSON.parse(localStorage.getItem("taskNumber")) || 1;
 
 let taskNumber = getTaskNumberFromLocalStorage();
-const getTasksFromLocalStorage = () => {
-    let savedTasks = JSON.parse(localStorage.getItem("tasks"));
-    
-    if (savedTasks === null) {
-        savedTasks = [];
-    }
-    
-    return savedTasks;
-};
+const getTasksFromLocalStorage = () => JSON.parse(localStorage.getItem("tasks")) || [];
 
 let tasks = getTasksFromLocalStorage();
 
