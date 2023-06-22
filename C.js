@@ -42,7 +42,7 @@ const createNewTaskElement = (id) => {
 const switchTaskList = (event) => {
     const task = event.target.parentElement.parentElement;
     event.target.checked ? moveToDone(task) : moveToTodo(task);
-    updateTaskListInLocalStorage(event);
+    updateTaskStatusInLocalStorage(event);
 };
 
 const createNewCheckboxElement = () => {
@@ -195,7 +195,7 @@ const addTaskToLocalStorage = (task) => {
 
     tasks.push(savedTask);
 
-    updateTasksInLocalStorage(tasks);
+    setTasksInLocalStorage();
 };
 
 const removeTaskFromLocalStorage = (event) => {
@@ -203,41 +203,33 @@ const removeTaskFromLocalStorage = (event) => {
 
     tasks = tasks.filter(task => task.id !== taskId);
 
-    updateTasksInLocalStorage(tasks);
+    setTasksInLocalStorage();
 };
 
 const updateTaskDescriptionInLocalStorage = (event) => {
     const taskId = event.target.parentElement.parentElement.id;
-
-    tasks.map(task => {
-        if (task.id === taskId) {
-            return task.description = event.target.value;
-        }
-
-        return task;
-    });
-
-    updateTasksInLocalStorage(tasks);
-};
-
-const updateTaskListInLocalStorage = (event) => {
-    const taskId = event.target.parentElement.parentElement.id;
+    const taskIndex = tasks.findIndex(task => task.id === taskId);
     
-    tasks.map(task => {
-        if (task.id === taskId) {
-            task.list = event.target.checked ? "done" : "todo";
-        }
-    });
+    tasks[taskIndex].description = event.target.value;
 
-    updateTasksInLocalStorage(tasks);
+    setTasksInLocalStorage();
 };
 
-const updateTasksInLocalStorage = (savedTasks) => localStorage.setItem("tasks", JSON.stringify(savedTasks));
+const updateTaskStatusInLocalStorage = (event) => {
+    const taskId = event.target.parentElement.parentElement.id;
+    const taskIndex = tasks.findIndex(task => task.id === taskId);
+    
+    tasks[taskIndex].list = event.target.checked ? "done" : "todo";
+
+    setTasksInLocalStorage();
+};
+
+const setTasksInLocalStorage = () => localStorage.setItem("tasks", JSON.stringify(tasks));
 
 const RemoveAllListTasksFromLocalStorage = (listName) => {
 
     tasks = tasks.filter(task => task.list !== listName);
-    updateTasksInLocalStorage(tasks);
+    setTasksInLocalStorage();
 };
 
 const deleteListTasks = (list) => {
