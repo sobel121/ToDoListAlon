@@ -15,7 +15,7 @@ const updateTaskNumber = () => {
     localStorage.setItem("taskNumber", JSON.stringify(taskNumber));
 };
 
-const createNewTaskElement = (id) => {
+const createNewTaskContainer = (id) => {
     const task = document.createElement("div");
     task.classList.add("task");
     task.id = id;
@@ -112,8 +112,8 @@ const connectEditAndDeleteButtons = () => {
     return connector;
 };
 
-const connectTaskContent = (id, description) => {
-    const task = createNewTaskElement(id);
+const createNewTaskElement = (id, description) => {
+    const task = createNewTaskContainer(id);
 
     const checkboxAndText = connectCheckboxAndText(description);
     const editAndDeleteButtons = connectEditAndDeleteButtons();
@@ -136,7 +136,7 @@ const specifyTaskList = (task, taskElement) => {
 };
 
 const createTaskElementFromLocalStorage = (task) => {
-    const taskElement = connectTaskContent(task.id, task.description);
+    const taskElement = createNewTaskElement(task.id, task.description);
     specifyTaskList(task, taskElement);    
 };
 
@@ -152,7 +152,7 @@ initializeTasksFromLocalStorage();
 const clearTaskInput = (event) => event.target.value = "";
 
 const newTask = (event) => {
-    const task = connectTaskContent(generateTaskId(taskNumber), event.target.value);
+    const task = createNewTaskElement(generateTaskId(taskNumber), event.target.value);
     
     todoList.appendChild(task);
     addTaskToLocalStorage(task);
