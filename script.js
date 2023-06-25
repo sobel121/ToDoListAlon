@@ -6,8 +6,6 @@ let tasks = getTasksFromLocalStorage();
 
 initializeTasksFromLocalStorage();
     
-setListsEventListeners();
-
 const generateTaskId = (taskNumber) => "t" + taskNumber;
 
 const setListsEventListeners = () => {
@@ -33,6 +31,8 @@ const setListsEventListeners = () => {
         });
     });
 };
+
+setListsEventListeners();
 
 const getDragAfterElement = (list, dragged, elementHeight) => {
     const draggableElements = Object.values(list.children).filter(task => task.id !== dragged.id);
