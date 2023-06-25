@@ -16,7 +16,7 @@ const updateLocalStorageAfterPositionSwap = (dragged, afterTask) => {
 
 const createTaskElementFromLocalStorage = (task) => {
     const taskElement = createNewTaskElement(task.id, task.description);
-    specifyTaskList(task, taskElement);    
+    setTaskList(task, taskElement);    
 };
 
 const initializeTasksFromLocalStorage = () => {
@@ -67,4 +67,9 @@ const setTasksInLocalStorage = () => localStorage.setItem("tasks", JSON.stringif
 const RemoveAllListTasksFromLocalStorage = (listName) => {
     tasks = tasks.filter(task => task.list !== listName);
     setTasksInLocalStorage();
+};
+
+const updateTaskNumberInLocalStorage = () => {
+    taskNumber++;
+    localStorage.setItem("taskNumber", JSON.stringify(taskNumber));
 };
