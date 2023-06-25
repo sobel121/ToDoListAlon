@@ -5,6 +5,7 @@ const lists = [todoList, doneList];
 const getTaskNumberFromLocalStorage = () => JSON.parse(localStorage.getItem("taskNumber")) || 1;
 
 let taskNumber = getTaskNumberFromLocalStorage();
+
 const getTasksFromLocalStorage = () => JSON.parse(localStorage.getItem("tasks")) || [];
 
 let tasks = getTasksFromLocalStorage();
