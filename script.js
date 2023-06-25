@@ -1,3 +1,5 @@
+// import { getTaskNumberFromLocalStorage } from "./localStorageFunctions";
+
 const todoList = document.getElementById("todo");
 const doneList = document.getElementById("done");
 const lists = [todoList, doneList];
@@ -66,16 +68,6 @@ const getDragAfterElement = (list, dragged, elementHeight) => {
             return closest;
         }
     }, { offset: Number.NEGATIVE_INFINITY }).element;
-};
-
-const getCertainListTasksFromLocalStorage = (localStorageId) => {
-    let savedTasks = JSON.parse(localStorage.getItem(localStorageId));
-
-    if (savedTasks === null) {
-        savedTasks = [];
-    }
-
-    return savedTasks;
 };
 
 const generateTaskId = (taskNumber) => "t" + taskNumber;
@@ -296,11 +288,17 @@ const updateTaskDescriptionInLocalStorage = (event) => {
     setTasksInLocalStorage();
 };
 
+const placeMovedTaskLastInArray = (taskIndex) => {
+    const movedTask = tasks.splice(taskIndex, 1);
+    tasks.push(movedTask[0]);
+};
+
 const updateTaskStatusInLocalStorage = (event) => {
     const taskId = getTaskElementFromHisChildren(event.target).id;
     const taskIndex = tasks.findIndex(task => task.id === taskId);
-    
     tasks[taskIndex].list = event.target.checked ? "done" : "todo";
+
+    placeMovedTaskLastInArray(taskIndex);
 
     setTasksInLocalStorage();
 };
