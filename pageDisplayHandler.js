@@ -6,12 +6,12 @@ const clearListTasksDisplay  = (list) => {
 
 const deleteDoneTasks = () => {
     clearListTasksDisplay(doneList);
-    RemoveAllListTasksFromLocalStorage("done");
+    removeAllListTasksFromLocalStorage("done");
 };
 
 const deleteTodoTasks = () => {
     clearListTasksDisplay(todoList);
-    RemoveAllListTasksFromLocalStorage("todo");
+    removeAllListTasksFromLocalStorage("todo");
 };
 
 const deleteAllTasks = () => {

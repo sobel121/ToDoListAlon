@@ -64,7 +64,7 @@ const updateTaskStatusInLocalStorage = (event) => {
 
 const setTasksInLocalStorage = () => localStorage.setItem("tasks", JSON.stringify(tasks));
 
-const RemoveAllListTasksFromLocalStorage = (listName) => {
+const removeAllListTasksFromLocalStorage = (listName) => {
     tasks = tasks.filter(task => task.list !== listName);
     setTasksInLocalStorage();
 };
