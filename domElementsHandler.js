@@ -77,8 +77,8 @@ const createNewTaskElement = (id, description) => {
 
 const createTaskObjectFromElement = (taskElement) => {
     return taskElement === undefined ? taskElement : {id: taskElement.id, 
-        description: taskElement.children[0].children[1].value,
-        list: taskElement.children[0].children[0].checked ? "done" : "todo"};
+        description: getTaskDescriptionFromTask(taskElement).value,
+        list: getTaskCheckboxFromTask(taskElement).checked ? "done" : "todo"};
 };
 
 const createNewCheckboxElement = () => {
@@ -87,4 +87,75 @@ const createNewCheckboxElement = () => {
     checkbox.addEventListener("click", switchTaskList);
     
     return checkbox;
+};
+
+const displayDraggedElementPosition = (event, list) => {
+    const dragged = document.getElementsByClassName("dragging")[0];
+    const afterTask = getElementAfterDraggedElement(list, dragged, event.clientY);
+
+    if (list === dragged.parentElement) {
+        event.preventDefault();
+
+        if (afterTask === undefined) {
+            list.appendChild(dragged);
+        } else {
+            list.insertBefore(dragged, afterTask);
+        }
+
+        list.dragged = createTaskObjectFromElement(dragged);
+        list.afterTask = createTaskObjectFromElement(afterTask);
+    }
+};
+
+const switchTaskList = (event) => {
+    const task = getTaskElementFromHisChildren(event.target);
+    event.target.checked ? moveToDone(task) : moveToTodo(task);
+    updateTaskStatusInLocalStorage(event);
+};
+
+const cancelTaskEdit = (event) => {
+    if (event.key === "Escape") {
+        event.target.value = event.target.dataset.recentTaskDescription;
+        disableDescriptionEdit(event);
+    }
+};
+
+const setTaskList = (task, taskElement) => {
+    const checkboxElement = getTaskCheckboxFromTask(taskElement);
+    if (task.list === "todo") {
+        checkboxElement.checked = false;
+        todoList.appendChild(taskElement);
+    } else {
+        checkboxElement.checked = true;
+        doneList.appendChild(taskElement);
+    }
+};
+
+const setListsEventListeners = () => {
+    applyListEventListeners(todoList);
+    applyListEventListeners(doneList);
+};
+
+const applyListEventListeners = (list) => {
+    list.addEventListener("dragover", (event) => {
+        displayDraggedElementPosition(event, list);
+    });
+
+    list.addEventListener("dragend", () => {
+        updateLocalStorageAfterPositionSwap(list.dragged, list.afterTask)
+    });
+};
+
+const getElementAfterDraggedElement = (list, dragged, elementHeight) => {
+    const draggableElements = getListElementsExceptForSpecifiedElement(list, dragged);
+
+   return draggableElements.reduce((closest, currentTask) => {
+       const elementBox = currentTask.getBoundingClientRect();
+       const offset = elementHeight - elementBox.top - elementBox.height / 2;
+       if (offset < 0 && offset > closest.offset) {
+           return { offset: offset, element: currentTask };
+       } else {
+           return closest;
+       }
+   }, { offset: Number.NEGATIVE_INFINITY }).element;
 };

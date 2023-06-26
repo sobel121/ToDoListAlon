@@ -20,7 +20,6 @@ const createTaskElementFromLocalStorage = (task) => {
 };
 
 const initializeTasksFromLocalStorage = () => {
-
     tasks.forEach(task => {
         createTaskElementFromLocalStorage(task);
     });
@@ -43,11 +42,12 @@ const removeTaskFromLocalStorage = (event) => {
 };
 
 const updateTaskDescriptionInLocalStorage = (event) => {
-    const taskId = getTaskElementFromHisChildren(event.target).id;
+    const taskDescriptionElement = event.target;
+    const taskId = getTaskElementFromHisChildren(taskDescriptionElement).id;
     const taskIndex = tasks.findIndex(task => task.id === taskId);
     
-    tasks[taskIndex].description = event.target.value;
-    event.target.dataset.recentTaskDescription = event.target.value;
+    tasks[taskIndex].description = taskDescriptionElement.value;
+    taskDescriptionElement.dataset.recentTaskDescription = taskDescriptionElement.value;
 
     setTasksInLocalStorage();
 };
